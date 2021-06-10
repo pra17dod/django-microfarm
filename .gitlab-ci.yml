@@ -1,0 +1,13 @@
+image: python:latest
+
+cache:
+  paths:
+    - ~/.cache/pip/
+
+before_script:
+  - python -V
+  - pip install -r test-requirements.txt
+
+test:
+  script:
+    - black --check .
