@@ -1,14 +1,23 @@
 import os
 from pathlib import Path
+from decouple import config
+import locale
+
+config.encoding = locale.getpreferredencoding(False)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
-SECRET_KEY = os.getenv("DEV_SECRET_KEY")
+ENVIRONMENT = config("ENVIRONMENT", default="development")
+SECRET_KEY = config("SECRET_KEY", default=None)
+if not SECRET_KEY:
+    print(
+        '"SECRET_KEY" not configured in environment! Configure it, and re-run the runserver command.'
+    )
+    exit(0)
+
 DEBUG = ENVIRONMENT == "development"
 
 if ENVIRONMENT == "production":
-    SECRET_KEY = os.getenv("PROD_SECRET_KEY")
     SESSION_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -27,6 +36,22 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # required for authentication
+    "django.contrib.sites",
+    # restframework apps
+    "rest_framework",
+    "rest_framework.authtoken",
+    # dj-rest-auth apps
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    # all-auth apps
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.facebook",
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.twitter",
+    # microfarm apps
     "commons.apps.CommonsConfig",
     "users.apps.UsersConfig",
     "market_garden.daily_chores.apps.DailyChoresConfig",
@@ -67,28 +92,22 @@ WSGI_APPLICATION = "microfarm.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
+        "NAME": config("DB_NAME", default="postgres"),
+        "USER": config("DB_USER", default="postgres"),
+        "PASSWORD": config("DB_PASSWORD", default="postgres"),
+        "HOST": config("DB_HOST", default="localhost"),
+        "PORT": config("DB_PORT", default="5432"),
     }
 }
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ("dj_rest_auth.jwt_auth.JWTCookieAuthentication",)
+}
+
+AUTHENTICATION_BACKENDS = {
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+}
 
 LANGUAGE_CODE = "en-us"
 
@@ -107,3 +126,24 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+SITE_ID = 1
+
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = config("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="none")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="none")
+
+ACCOUNT_EMAIL_REQUIRED = config("ACCOUNT_EMAIL_REQUIRED", default=True)
+ACCOUNT_EMAIL_VERIFICATION = config("ACCOUNT_EMAIL_VERIFICATION", default="none")
+ACCOUNT_AUTHENTICATION_METHOD = config(
+    "ACCOUNT_AUTHENTICATION_METHOD", default="username_email"
+)
+
+REST_USE_JWT = True
