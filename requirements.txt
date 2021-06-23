@@ -1,7 +1,9 @@
 Django==3.2.4
 django-allauth==0.44.0
+django-autoslug==1.9.8
 djangorestframework==3.12.4
 djangorestframework-simplejwt==4.7.1
 dj-rest-auth==2.1.7
+Pillow==8.2.0
 psycopg2==2.8.6
 python-decouple==3.4

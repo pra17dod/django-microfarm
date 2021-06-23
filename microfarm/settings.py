@@ -54,9 +54,7 @@ INSTALLED_APPS = [
     # microfarm apps
     "commons.apps.CommonsConfig",
     "users.apps.UsersConfig",
-    "market_garden.daily_chores.apps.DailyChoresConfig",
-    "market_garden.mulching.apps.MulchingConfig",
-    "market_garden.watering.apps.WateringConfig",
+    "market_garden.apps.MarketGardenConfig",
 ]
 
 MIDDLEWARE = [
@@ -127,7 +125,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-SITE_ID = 1
+SITE_ID = config("SITE_ID", default=1, cast=int)
 
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
