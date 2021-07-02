@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from commons.models.farm import FarmModel
+from market_garden.cropmap.scripts.cropmap import Cropmap
 
 
 class MarketGarden(FarmModel):
@@ -88,7 +89,7 @@ class MarketGarden(FarmModel):
         null=True,
     )
     area_used = models.DecimalField(
-        verbose_name="Area Used(in %)",
+        verbose_name="Area Used (in %)",
         max_digits=4,
         decimal_places=2,
         blank=True,
@@ -130,3 +131,33 @@ class MarketGarden(FarmModel):
 
     def __str__(self):
         return f"{self.user}'s Market Garden"
+
+    def save(self, *args, **kwargs):
+        super(MarketGarden, self).save(*args, **kwargs)
+        market_garden = Cropmap(
+            self.length,
+            self.width,
+            self.path_width,
+            self.path_width_btw_sections,
+            self.min_bed_length,
+            self.max_bed_length,
+            self.min_bed_per_section,
+            self.max_bed_per_section,
+            self.bed_width,
+            self.compost_height_of_bed,
+            self.compost_height_of_path,
+        )
+
+        (
+            self.bed_length,
+            self.bed_along_side_name,
+            self.num_of_bed_along_side,
+            self.num_of_bed_along_otherside,
+            self.bed_per_section,
+            self.total_sections,
+            self.area_used,
+            self.compost_required_per_bed,
+            self.total_compost_required,
+        ) = market_garden.get_cropmap()
+
+        super(MarketGarden, self).save(*args, **kwargs)
