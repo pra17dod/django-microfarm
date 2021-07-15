@@ -2,7 +2,7 @@ from django.contrib import admin
 from market_garden.cropmap.models.cropmap import MarketGarden
 from market_garden.cropmap.models.section import Section, Bed
 from market_garden.daily_chores.models.daily_chores import DailyChores
-from market_garden.watering.models.watering import WateringRule, CustomWateringRule
+from market_garden.watering.models.watering import WateringRule
 from market_garden.mulching.models.mulching import MulchingRule, CustomMulchingRule
 
 
@@ -112,13 +112,6 @@ class MulchingRuleAdmin(admin.ModelAdmin):
         model = MulchingRule
 
 
-class CustomWateringRuleAdmin(admin.StackedInline):
-    model = CustomWateringRule
-
-
 @admin.register(WateringRule)
 class WateringRuleAdmin(admin.ModelAdmin):
-    inlines = [CustomWateringRuleAdmin]
-
-    class Meta:
-        model = WateringRule
+    pass

@@ -145,3 +145,8 @@ ACCOUNT_AUTHENTICATION_METHOD = config(
 )
 
 REST_USE_JWT = True
+
+# Weather and Forecast API KEYS
+
+WEATHER_API_KEY = config("WEATHER_API_KEY", default=None)
+FORECAST_API_KEY = config("FORECAST_API_KEY", default=None)

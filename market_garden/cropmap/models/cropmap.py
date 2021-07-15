@@ -60,7 +60,6 @@ class MarketGarden(FarmModel):
         decimal_places=2,
         default=0.75,
         blank=True,
-        null=True,
     )
     bed_along_side_name = models.CharField(
         verbose_name="Side Along which Bed are made",
@@ -147,7 +146,6 @@ class MarketGarden(FarmModel):
             self.compost_height_of_bed,
             self.compost_height_of_path,
         )
-
         (
             self.bed_length,
             self.bed_along_side_name,
