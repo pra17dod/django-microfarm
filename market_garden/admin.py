@@ -17,6 +17,7 @@ class MarketGardenAdmin(admin.ModelAdmin):
                     "user",
                     "latitude",
                     "longitude",
+                    "timezone",
                     "length",
                     "width",
                 ]

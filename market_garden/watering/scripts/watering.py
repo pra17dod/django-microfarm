@@ -22,6 +22,7 @@ class WateringRequired:
         min_hours_gap_btw_watering: int,
         latitude: float,
         longitude: float,
+        timezone: str,
     ):
         """
         Constructs a new WateringRequired of user-provided parameters.
@@ -36,6 +37,7 @@ class WateringRequired:
         self.min_hours_gap_btw_watering = int(min_hours_gap_btw_watering)
         self.latitude = float(latitude)
         self.longitude = float(longitude)
+        self.timezone = str(timezone)
 
     def weather_api(self) -> requests.models.Response:
         """
@@ -170,6 +172,7 @@ if __name__ == "__main__":
     min_hours_gap_btw_watering = int(input("Enter min hours gap between watering: "))
     latitude = float(input("Enter latitude: "))
     longitude = float(input("Enter longitude: "))
+    timezone = str(input("Enter timezone name e.g., Asia/Kolkata: "))
 
     watering_rule = WateringRequired(
         start_week,
@@ -181,6 +184,7 @@ if __name__ == "__main__":
         min_hours_gap_btw_watering,
         latitude,
         longitude,
+        timezone,
     )
 
     print(watering_rule.watering_required())

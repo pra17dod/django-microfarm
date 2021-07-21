@@ -51,7 +51,9 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.facebook",
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.twitter",
-    # microfarm apps
+    # celery apps
+    "django_celery_beat",
+    # django-microfarm apps
     "commons.apps.CommonsConfig",
     "users.apps.UsersConfig",
     "market_garden.apps.MarketGardenConfig",
@@ -150,3 +152,11 @@ REST_USE_JWT = True
 
 WEATHER_API_KEY = config("WEATHER_API_KEY", default=None)
 FORECAST_API_KEY = config("FORECAST_API_KEY", default=None)
+
+# Timezone API KEY
+
+TIMEZONE_API_KEY = config("TIMEZONE_API_KEY", default=None)
+
+# Celery Configs
+
+CELERY_IMPORTS = ("market_garden.watering.tasks",)

@@ -31,6 +31,11 @@ class FarmModel(BaseModel):
         decimal_places=1,
         editable=True,
     )
+    timezone = models.CharField(
+        verbose_name="Timezone",
+        max_length=100,
+        blank=True,
+    )
 
     class Meta:
         abstract = True

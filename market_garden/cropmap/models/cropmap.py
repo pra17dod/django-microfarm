@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from commons.models.farm import FarmModel
 from market_garden.cropmap.scripts.cropmap import Cropmap
+from commons.scripts.location import get_timezone
 
 
 class MarketGarden(FarmModel):
@@ -133,6 +134,10 @@ class MarketGarden(FarmModel):
 
     def save(self, *args, **kwargs):
         super(MarketGarden, self).save(*args, **kwargs)
+
+        if not self.timezone:
+            self.timezone = get_timezone(self.latitude, self.longitude)
+
         market_garden = Cropmap(
             self.length,
             self.width,

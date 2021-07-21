@@ -13,7 +13,7 @@ class WateringRule(BaseModel):
     )
     slug = AutoSlugField(
         verbose_name="Slug",
-        populate_from="name",
+        populate_from="market_garden",
         max_length=50,
         editable=True,
     )
@@ -61,8 +61,8 @@ class WateringRule(BaseModel):
     def __str__(self):
         return f"{self.market_garden.user} - Market Garden"
 
-    def todo_watering(self):
-        watering_rule = WateringRequired(
+    def watering_rule(self):
+        return WateringRequired(
             self.start_week,
             self.end_week,
             self.if_rain,
@@ -72,6 +72,12 @@ class WateringRule(BaseModel):
             self.min_hours_gap_btw_watering,
             self.market_garden.latitude,
             self.market_garden.longitude,
+            self.market_garden.timezone,
         )
 
-        return watering_rule.watering_required()
+    def todo_watering(self):
+        return self.watering_rule().watering_required()
+
+    def is_raining(self):
+        value, curr_temp = self.watering_rule().weather_now()
+        return value
