@@ -73,13 +73,19 @@ class MarketGardenAdmin(admin.ModelAdmin):
         ),
     ]
     readonly_fields = [
+        "timezone",
+        "bed_length",
+        "bed_along_side_name",
+        "num_of_bed_along_side",
+        "num_of_bed_along_otherside",
+        "bed_per_section",
+        "total_sections",
+        "compost_required_per_bed",
+        "total_compost_required",
+        "area_used",
         "updated_at",
         "created_at",
     ]
-    list_display = (
-        "user",
-        "created_at",
-    )
     list_filter = ["user"]
 
 
@@ -90,7 +96,7 @@ class BedAdmin(admin.StackedInline):
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     inlines = [BedAdmin]
-    list_filter = ["user"]
+    list_filter = ["market_garden"]
 
     class Meta:
         model = Section

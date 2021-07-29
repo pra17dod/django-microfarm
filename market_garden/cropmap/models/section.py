@@ -1,29 +1,36 @@
 from django.db import models
-from django.conf import settings
 from commons.models.base import BaseModel
 from autoslug import AutoSlugField
+from market_garden.cropmap.models.cropmap import MarketGarden
 
 
 class Section(BaseModel):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        blank=True,
+    market_garden = models.ForeignKey(
+        MarketGarden,
         on_delete=models.CASCADE,
+        verbose_name="Market Garden",
     )
     name = models.CharField(
         verbose_name="Section Name",
         max_length=50,
         editable=True,
+        blank=True,
     )
     slug = AutoSlugField(
         verbose_name="Slug",
         populate_from="name",
         max_length=50,
         editable=True,
+        blank=True,
     )
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.name = f"Market Garden ID-{self.market_garden.id} Section{chr(ord('A') + Section.objects.filter(market_garden__id=self.market_garden.id).count())}"
+        super(Section, self).save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.user} - {self.name}"
+        return f"{self.market_garden.user} - {self.name}"
 
 
 class Bed(BaseModel):
@@ -45,7 +52,8 @@ class Bed(BaseModel):
     )
 
     def save(self, *args, **kwargs):
-        self.name = f"{self.section.name}{Bed.objects.count()+1}"
+        if not self.id:
+            self.name = f"{self.section.name} Bed{Bed.objects.filter(section__id=self.section.id).count()+1}"
         super(Bed, self).save(*args, **kwargs)
 
     def __str__(self):

@@ -16,6 +16,7 @@ class WateringRule(BaseModel):
         populate_from="market_garden",
         max_length=50,
         editable=True,
+        blank=True,
     )
     start_week = models.IntegerField(
         verbose_name="Start Week",
@@ -59,7 +60,7 @@ class WateringRule(BaseModel):
     )
 
     def __str__(self):
-        return f"{self.market_garden.user} - Market Garden"
+        return f"{self.market_garden.user} - Market Garden ID-{self.market_garden.id}"
 
     def watering_rule(self):
         return WateringRequired(

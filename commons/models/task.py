@@ -14,6 +14,7 @@ class TaskModel(BaseModel):
         populate_from="name",
         max_length=50,
         editable=True,
+        blank=True,
     )
     description = models.TextField(
         verbose_name="Description",

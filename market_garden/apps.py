@@ -8,3 +8,4 @@ class MarketGardenConfig(AppConfig):
 
     def ready(self):
         import market_garden.watering.signals
+        import market_garden.cropmap.signals

@@ -10,6 +10,7 @@ class BaseModel(models.Model):
     )
     updated_at = models.DateTimeField(
         verbose_name="Updated at",
+        blank=True,
     )
 
     def save(self, *args, **kwargs):

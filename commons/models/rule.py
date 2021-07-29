@@ -14,6 +14,7 @@ class RuleModel(BaseModel):
         populate_from="name",
         max_length=50,
         editable=True,
+        blank=True,
     )
     string = models.CharField(
         verbose_name="String value",
