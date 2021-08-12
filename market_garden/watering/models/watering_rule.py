@@ -59,6 +59,9 @@ class WateringRule(BaseModel):
         blank=True,
     )
 
+    class Meta:
+        verbose_name_plural = "06 Watering Rules"
+
     def __str__(self):
         return f"{self.market_garden.user} - Market Garden ID-{self.market_garden.id}"
 

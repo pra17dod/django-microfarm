@@ -12,7 +12,7 @@ class MulchingRule(TaskModel):
     )
 
     class Meta:
-        verbose_name = "Mulching Rule"
+        verbose_name_plural = "05 Mulching Rules"
 
     def __str__(self):
         return str(self.name)

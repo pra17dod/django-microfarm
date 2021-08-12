@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from celery import shared_task
-from .models.watering import WateringRule
+from market_garden.watering.models.watering_rule import WateringRule
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 

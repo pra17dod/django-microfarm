@@ -1,9 +1,11 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from market_garden.cropmap.models.cropmap import MarketGarden
 from market_garden.cropmap.models.section import Section, Bed
 from market_garden.daily_chores.models.daily_chores import DailyChores
-from market_garden.watering.models.watering import WateringRule
-from market_garden.mulching.models.mulching import MulchingRule, CustomMulchingRule
+from market_garden.mulching.models.mulching_rule import MulchingRule, CustomMulchingRule
+from market_garden.watering.models.watering_rule import WateringRule
+
+admin.site.site_header = "Django Microfarm"
 
 
 @admin.register(MarketGarden)
@@ -102,9 +104,14 @@ class SectionAdmin(admin.ModelAdmin):
         model = Section
 
 
+@admin.register(Bed)
+class BedAdmin(admin.ModelAdmin):
+    list_filter = ["section"]
+
+
 @admin.register(DailyChores)
 class DailyChoresAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ["market_garden"]
 
 
 class CustomMulchingRuleAdmin(admin.StackedInline):
@@ -121,4 +128,5 @@ class MulchingRuleAdmin(admin.ModelAdmin):
 
 @admin.register(WateringRule)
 class WateringRuleAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", "market_garden"]
+    list_filter = ["market_garden"]

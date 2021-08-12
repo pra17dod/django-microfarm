@@ -1,13 +1,13 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
-from market_garden.watering.models.watering import WateringRule
+from market_garden.watering.models.watering_rule import WateringRule
 import json
 import pytz
 
 
 @receiver(post_save, sender=WateringRule)
-def create_watering_task(sender, instance, created, **kwargs):
+def check_watering_required_task(sender, instance, created, **kwargs):
     if created:
         schedule, _ = CrontabSchedule.objects.get_or_create(
             minute="00",

@@ -125,7 +125,7 @@ class MarketGarden(FarmModel):
     )
 
     class Meta:
-        verbose_name = "Market Garden"
+        verbose_name_plural = "01 Market Gardens"
 
     def __str__(self):
         return f"{self.user}'s MarketGarden ID-{self.id}"

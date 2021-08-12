@@ -2,12 +2,13 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from market_garden.cropmap.models.cropmap import MarketGarden
 from market_garden.cropmap.models.section import Section, Bed
-from commons.scripts.location import get_timezone
 from market_garden.cropmap.scripts.cropmap import Cropmap
+from commons.scripts.location import get_timezone
+from market_garden.cropmap.tasks import create_section_bed
 
 
 @receiver(pre_save, sender=MarketGarden)
-def calculate_cropmap(sender, instance, **kwargs):
+def calculate_cropmap_task(sender, instance, **kwargs):
     if not instance.timezone:
         instance.timezone = get_timezone(instance.latitude, instance.longitude)
 
@@ -37,14 +38,7 @@ def calculate_cropmap(sender, instance, **kwargs):
     ) = market_garden.get_cropmap()
 
 
-def create_bed(instance, num_of_bed_per_section=None):
-    for _ in range(num_of_bed_per_section):
-        Bed.objects.create(section=instance)
-
-
 @receiver(post_save, sender=MarketGarden)
-def create_section(sender, instance, created, **kwargs):
+def create_section_bed_task(sender, instance, created, **kwargs):
     if created:
-        for _ in range(instance.total_sections):
-            section = Section.objects.create(market_garden=instance)
-            create_bed(section, instance.bed_per_section)
+        create_section_bed.apply_async(args=[instance.id], kwargs={}, countdown=3)

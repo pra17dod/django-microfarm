@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "commons.apps.CommonsConfig",
     "users.apps.UsersConfig",
     "market_garden.apps.MarketGardenConfig",
+    "market_garden.todo.apps.TodoConfig",
 ]
 
 MIDDLEWARE = [

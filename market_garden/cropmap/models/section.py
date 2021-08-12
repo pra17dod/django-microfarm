@@ -29,6 +29,9 @@ class Section(BaseModel):
             self.name = f"Market Garden ID-{self.market_garden.id} Section{chr(ord('A') + Section.objects.filter(market_garden__id=self.market_garden.id).count())}"
         super(Section, self).save(*args, **kwargs)
 
+    class Meta:
+        verbose_name_plural = "02 Sections"
+
     def __str__(self):
         return f"{self.market_garden.user} - {self.name}"
 
@@ -55,6 +58,9 @@ class Bed(BaseModel):
         if not self.id:
             self.name = f"{self.section.name} Bed{Bed.objects.filter(section__id=self.section.id).count()+1}"
         super(Bed, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name_plural = "03 Beds"
 
     def __str__(self):
         return self.name

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.utils.timezone import now
+from commons.scripts.time import time_diff_in_hours, is_current_week_in_range
 import datetime
 import requests
 import re
@@ -62,26 +63,6 @@ class WateringRequired:
         )
         return response
 
-    def time_diff_in_hours(
-        self, to_time: datetime.datetime, from_time: datetime.datetime
-    ) -> int:
-        """
-        Returns time difference of datetime.datetime format times in hours.
-        """
-
-        delta = abs(to_time - from_time)
-        return int(delta.days * 24 + delta.seconds / 3600.0)
-
-    def is_current_week_in_range(self) -> bool:
-        """
-        Checks if current week number is in the range of start week and end week.
-
-        returns: A boolean about today is in week range or not.
-        """
-
-        current_week = datetime.date.today().isocalendar()[1]
-        return current_week in range(self.start_week, self.end_week + 1)
-
     def weather_now(self) -> tuple:
         """
         Checks if it is going to rain using the Weather API.
@@ -119,12 +100,10 @@ class WateringRequired:
                  the same.
         """
 
-        if not self.is_current_week_in_range():
+        if not is_current_week_in_range(self.start_week, self.end_week):
             return (False, f"Today not in Watering Period")
         else:
-            last_watered_time_diff = self.time_diff_in_hours(
-                now(), self.last_watered_at
-            )
+            last_watered_time_diff = time_diff_in_hours(now(), self.last_watered_at)
             if last_watered_time_diff < self.min_hours_gap_btw_watering:
                 return (False, f"Watered {last_watered_time_diff} hours ago")
             else:
