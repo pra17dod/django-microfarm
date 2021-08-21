@@ -1,4 +1,5 @@
 from django.db import models
+from rest_framework import serializers
 from commons.models.task import TaskModel
 from market_garden.cropmap.models.cropmap import MarketGarden
 
@@ -33,3 +34,9 @@ class DailyChores(TaskModel):
 
     def __str__(self):
         return self.name
+
+
+class DailyChoresSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DailyChores
+        fields = "__all__"

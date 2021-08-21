@@ -1,7 +1,10 @@
 from django.db import models
+from rest_framework import serializers
 from commons.models.base import BaseModel
 from autoslug import AutoSlugField
 from market_garden.cropmap.models.cropmap import MarketGarden
+from commons.scripts.get_user_id import get_user_id
+from django.shortcuts import get_object_or_404
 
 
 class Section(BaseModel):
@@ -36,6 +39,20 @@ class Section(BaseModel):
         return f"{self.market_garden.user} - {self.name}"
 
 
+class SectionSerializer(serializers.ModelSerializer):
+    def validate_market_garden_owner(self, data):
+        market_garden = get_object_or_404(MarketGarden, pk=data["market_garden"])
+        if get_user_id(self.request)["user_id"] != market_garden.user:
+            raise serializers.ValidationError(
+                "You are not the owner of this market-garden"
+            )
+        return data
+
+    class Meta:
+        model = Section
+        fields = "__all__"
+
+
 class Bed(BaseModel):
     section = models.ForeignKey(
         Section,
@@ -64,3 +81,17 @@ class Bed(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class BedSerializer(serializers.ModelSerializer):
+    def validate_section_owner(self, data):
+        section = get_object_or_404(Section, pk=data["section"])
+        if get_user_id(self.request)["user_id"] != section.market_garden.user:
+            raise serializers.ValidationError(
+                "You are not the owner of this market-garden"
+            )
+        return data
+
+    class Meta:
+        model = Bed
+        fields = "__all__"

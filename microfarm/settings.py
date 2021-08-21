@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from decouple import config
 import locale
+from datetime import timedelta
 
 config.encoding = locale.getpreferredencoding(False)
 
@@ -55,7 +56,6 @@ INSTALLED_APPS = [
     "django_celery_beat",
     # django-microfarm apps
     "commons.apps.CommonsConfig",
-    "users.apps.UsersConfig",
     "market_garden.apps.MarketGardenConfig",
     "market_garden.todo.apps.TodoConfig",
 ]
@@ -102,12 +102,53 @@ DATABASES = {
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("dj_rest_auth.jwt_auth.JWTCookieAuthentication",)
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        # "rest_framework.authentication.BasicAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
 AUTHENTICATION_BACKENDS = {
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
+}
+
+REST_USE_JWT = True
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=config("ACCESS_TOKEN_LIFETIME", default=5, cast=int)
+    ),
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        days=config("REFRESH_TOKEN_LIFETIME", default=1, cast=int)
+    ),
+    "ROTATE_REFRESH_TOKENS": config("ROTATE_REFRESH_TOKENS", default=True, cast=bool),
+    "BLACKLIST_AFTER_ROTATION": config(
+        "BLACKLIST_AFTER_ROTATION", default=True, cast=bool
+    ),
+    "UPDATE_LAST_LOGIN": config("UPDATE_LAST_LOGIN", default=False, cast=bool),
+    "ALGORITHM": config("ALGORITHM", default="HS256", cast=str),
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": config("VERIFYING_KEY", default=None),
+    "AUDIENCE": config("AUDIENCE", default=None),
+    "ISSUER": config("ISSUER", default=None),
+    "JWK_URL": config("JWK_URL", default=None),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "JTI_CLAIM": "jti",
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(
+        minutes=config("SLIDING_TOKEN_LIFETIME", default=5, cast=int)
+    ),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(
+        days=config("SLIDING_TOKEN_REFRESH_LIFETIME", default=1, cast=int)
+    ),
 }
 
 LANGUAGE_CODE = "en-us"
@@ -147,7 +188,6 @@ ACCOUNT_AUTHENTICATION_METHOD = config(
     "ACCOUNT_AUTHENTICATION_METHOD", default="username_email"
 )
 
-REST_USE_JWT = True
 
 # Weather and Forecast API KEYS
 
@@ -157,7 +197,3 @@ FORECAST_API_KEY = config("FORECAST_API_KEY", default=None)
 # Timezone API KEY
 
 TIMEZONE_API_KEY = config("TIMEZONE_API_KEY", default=None)
-
-# Celery Configs
-
-CELERY_IMPORTS = ("market_garden.watering.tasks",)

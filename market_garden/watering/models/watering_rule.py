@@ -1,4 +1,5 @@
 from django.db import models
+from rest_framework import serializers
 from django.conf import settings
 from commons.models.base import BaseModel
 from commons.models.rule import RuleModel
@@ -85,3 +86,9 @@ class WateringRule(BaseModel):
     def is_raining(self):
         value, curr_temp = self.watering_rule().weather_now()
         return value
+
+
+class WateringRuleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WateringRule
+        fields = "__all__"

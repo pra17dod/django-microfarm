@@ -1,6 +1,8 @@
 from django.db import models
+from rest_framework import serializers
 from django.conf import settings
 from commons.models.farm import FarmModel
+from django.utils.timezone import now
 
 
 class MarketGarden(FarmModel):
@@ -129,3 +131,94 @@ class MarketGarden(FarmModel):
 
     def __str__(self):
         return f"{self.user}'s MarketGarden ID-{self.id}"
+
+
+class MarketGardenSerializer(serializers.ModelSerializer):
+    path_width = serializers.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        initial=0.4,
+    )
+    path_width_btw_sections = serializers.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        initial=0.7,
+    )
+    min_bed_length = serializers.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        initial=5.0,
+    )
+    max_bed_length = serializers.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        initial=25.0,
+    )
+    min_bed_per_section = serializers.IntegerField(
+        initial=1,
+    )
+    max_bed_per_section = serializers.IntegerField(
+        initial=10,
+    )
+    bed_width = serializers.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        initial=0.75,
+    )
+    compost_height_of_bed = serializers.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        initial=0.3,
+    )
+    compost_height_of_path = serializers.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        initial=0.1,
+    )
+
+    class Meta:
+        model = MarketGarden
+        fields = [
+            "id",
+            "user",
+            "latitude",
+            "longitude",
+            "timezone",
+            "length",
+            "width",
+            "path_width",
+            "path_width_btw_sections",
+            "min_bed_length",
+            "max_bed_length",
+            "min_bed_per_section",
+            "max_bed_per_section",
+            "bed_length",
+            "bed_width",
+            "bed_along_side_name",
+            "num_of_bed_along_side",
+            "num_of_bed_along_otherside",
+            "bed_per_section",
+            "total_sections",
+            "area_used",
+            "compost_height_of_bed",
+            "compost_height_of_path",
+            "compost_required_per_bed",
+            "total_compost_required",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = [
+            "user",
+            "timezone",
+            "bed_length",
+            "bed_along_side_name",
+            "num_of_bed_along_side",
+            "num_of_bed_along_otherside",
+            "bed_per_section",
+            "total_sections",
+            "compost_required_per_bed",
+            "total_compost_required",
+            "area_used",
+            "updated_at",
+            "created_at",
+        ]

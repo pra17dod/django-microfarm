@@ -1,4 +1,5 @@
 from django.db import models
+from rest_framework import serializers
 from django.conf import settings
 from commons.models.rule import RuleModel
 from commons.models.task import TaskModel
@@ -18,6 +19,12 @@ class MulchingRule(TaskModel):
         return str(self.name)
 
 
+class MulchingRuleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MulchingRule
+        fields = "__all__"
+
+
 class CustomMulchingRule(RuleModel):
     parent_rule = models.ForeignKey(
         MulchingRule,
@@ -33,3 +40,9 @@ class CustomMulchingRule(RuleModel):
 
     def __str__(self):
         return f"{self.parent_rule.name} - {self.name}"
+
+
+class CustomMulchingRuleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomMulchingRule
+        fields = "__all__"

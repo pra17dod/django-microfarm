@@ -6,19 +6,21 @@ from dj_rest_auth.registration.views import (
 )
 
 urlpatterns = [
-    path("", include("dj_rest_auth.urls")),
-    path("registration/", include("dj_rest_auth.registration.urls")),
-    path("facebook/", FacebookLogin.as_view(), name="fb_login"),
-    path("google/", GoogleLogin.as_view(), name="google_login"),
-    path("twitter/", TwitterLogin.as_view(), name="twitter_login"),
-    path("facebook/connect/", FacebookConnect.as_view(), name="fb_connect"),
-    path("google/connect/", GoogleConnect.as_view(), name="google_connect"),
-    path("twitter/connect/", TwitterConnect.as_view(), name="twitter_connect"),
+    path(r"", include("dj_rest_auth.urls")),
+    path(r"registration/", include("dj_rest_auth.registration.urls")),
+    path(r"facebook/", FacebookLogin.as_view(), name="fb_login"),
+    path(r"google/", GoogleLogin.as_view(), name="google_login"),
+    path(r"twitter/", TwitterLogin.as_view(), name="twitter_login"),
+    path(r"facebook/connect/", FacebookConnect.as_view(), name="fb_connect"),
+    path(r"google/connect/", GoogleConnect.as_view(), name="google_connect"),
+    path(r"twitter/connect/", TwitterConnect.as_view(), name="twitter_connect"),
     path(
-        "socialaccounts/", SocialAccountListView.as_view(), name="social_account_list"
+        r"socialaccounts/",
+        SocialAccountListView.as_view(),
+        name="social_account_list",
     ),
     path(
-        "socialaccounts/<int:pk>/disconnect/",
+        r"socialaccounts/<int:pk>/disconnect/",
         SocialAccountDisconnectView.as_view(),
         name="social_account_disconnect",
     ),
