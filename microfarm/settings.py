@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # apis-docs
+    "drf_yasg",
     # required for authentication
     "django.contrib.sites",
     # restframework apps
@@ -103,7 +105,6 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        # "rest_framework.authentication.BasicAuthentication",
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
@@ -197,3 +198,29 @@ FORECAST_API_KEY = config("FORECAST_API_KEY", default=None)
 # Timezone API KEY
 
 TIMEZONE_API_KEY = config("TIMEZONE_API_KEY", default=None)
+
+# Swagger UI Configs
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "AUTH TOKEN": {
+            "description": (
+                f"This supports only JWT authentication. To get your "
+                f"access token, please find registration url under 'auth' "
+                f"section, if already registered then use login url and "
+                f"paste it here in the format given below: \n\n"
+                f"Format: Bearer <your-jwt-token>"
+            ),
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        }
+    },
+    "USE_SESSION_AUTH": False,
+}
+
+# REDOC Configs
+
+REDOC_SETTINGS = {
+    "LAZY_RENDERING": True,
+}
