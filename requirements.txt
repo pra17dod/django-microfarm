@@ -1,6 +1,6 @@
 celery==5.1.2
 dj-rest-auth==2.1.7
-Django==3.2.4
+Django==3.2.19
 django-allauth==0.44.0
 django-autoslug==1.9.8
 django-celery-beat==2.2.1
